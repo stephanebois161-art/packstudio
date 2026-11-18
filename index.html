@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PackStudio — Votre emballage sur mesure en 3D</title>
+  <meta name="description" content="Créez la maquette 3D de votre emballage (boîte pliante, sac, coffret, présentoir), téléchargez-la et demandez votre devis." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="./">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3 28 9.5v13L16 29 4 22.5v-13z" fill="#2b5cff"/><path d="M16 3 28 9.5 16 16 4 9.5z" fill="#6f90ff"/><path d="M16 16v13L4 22.5v-13z" fill="#1d44d6"/></svg>
+        <span>PackStudio</span>
+      </a>
+      <nav class="nav">
+        <a href="#emballages">Emballages</a>
+        <a href="#etapes">Comment ça marche</a>
+        <a href="editor.html#devis">Devis</a>
+      </nav>
+      <div class="header-actions">
+        <a class="btn btn-ghost btn-sm" href="editor.html#devis">Demander un devis</a>
+        <a class="btn btn-primary btn-sm" href="editor.html">Créer ma maquette</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <div>
+          <span class="eyebrow">● Maquettes d'emballage en 3D</span>
+          <h1>Imaginez votre emballage.<br /><span>Voyez-le en 3D.</span></h1>
+          <p class="lead">Choisissez votre format, ajustez les dimensions, ajoutez votre logo et votre couleur : votre emballage prend vie en quelques secondes. Il ne reste plus qu'à demander votre devis.</p>
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="editor.html">Créer ma maquette gratuitement →</a>
+            <a class="btn btn-ghost" href="editor.html#devis">Demander un devis</a>
+          </div>
+          <ul class="trust">
+            <li>Gratuit, sans inscription</li>
+            <li>Maquette téléchargeable en PNG</li>
+            <li>Devis personnalisé</li>
+          </ul>
+        </div>
+        <div class="hero-visual">
+          <canvas id="hero-canvas" aria-label="Aperçu 3D d'une boîte personnalisée"></canvas>
+          <div class="chip chip-1"><span class="dot">⬚</span><div>120 × 80 × 200 mm<small>Dimensions sur mesure</small></div></div>
+          <div class="chip chip-2"><span class="dot">✦</span><div>Finition mate<small>Mat, brillant ou kraft</small></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="emballages">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Nos emballages</span>
+          <h2>Un format pour chaque produit</h2>
+          <p>Sélectionnez un type d'emballage et personnalisez-le entièrement dans notre éditeur 3D.</p>
+        </div>
+        <div class="cards">
+          <a class="card" href="editor.html?type=boite-pliante">
+            <div class="card-visual">
+              <svg viewBox="0 0 120 120" aria-hidden="true"><path d="M60 14 98 32v58L60 108 22 90V32z" fill="#fff" stroke="#c9d3ee"/><path d="M60 14 98 32 60 50 22 32z" fill="#eef2fc" stroke="#c9d3ee"/><path d="M60 50v58L22 90V32z" fill="#dfe6f8" stroke="#c9d3ee"/><circle cx="79" cy="66" r="9" fill="#2b5cff"/></svg>
+            </div>
+            <div class="card-body">
+              <h3>Boîtes pliantes</h3>
+              <p>Cosmétiques, alimentaire, électronique : la boîte carton à rabats, livrée à plat.</p>
+              <span class="card-link">Personnaliser →</span>
+            </div>
+          </a>
+          <a class="card" href="editor.html?type=sac">
+            <div class="card-visual">
+                            <svg viewBox="0 0 120 120" aria-hidden="true"><path d="M44 40c0-12 7-20 16-20s16 8 16 20" fill="none" stroke="#9aa8cc" stroke-width="4"/><path d="M28 38h64l6 72H22z" fill="#fff" stroke="#c9d3ee"/><path d="M92 38l6 72-14-8z" fill="#dfe6f8"/></svg>
+            </div>
+            <div class="card-body">
+              <h3>Sacs</h3>
+              <p>Sacs papier et kraft à poignées, pour la boutique comme pour l'événementiel.</p>
+              <span class="card-link">Personnaliser →</span>
+            </div>
+          </a>
+          <a class="card" href="editor.html?type=coffret">
+            <div class="card-visual">
+                            <svg viewBox="0 0 120 120" aria-hidden="true"><path d="M60 30 104 46v36L60 100 16 82V46z" fill="#fff" stroke="#c9d3ee"/><path d="M60 22 106 40v10L60 66 14 50V40z" fill="#eef2fc" stroke="#c9d3ee"/><path d="M60 56v10L14 50V40z" fill="#dfe6f8"/></svg>
+            </div>
+            <div class="card-body">
+              <h3>Coffrets</h3>
+              <p>Coffrets rigides avec couvercle, pour un déballage premium et mémorable.</p>
+              <span class="card-link">Personnaliser →</span>
+            </div>
+          </a>
+          <a class="card" href="editor.html?type=presentoir">
+            <div class="card-visual">
+              <svg viewBox="0 0 120 120" aria-hidden="true"><path d="M30 14h60v48H30z" fill="#fff" stroke="#c9d3ee"/><path d="M30 62h60l12 34H18z" fill="#eef2fc" stroke="#c9d3ee"/><path d="M18 96h84v12H18z" fill="#fff" stroke="#c9d3ee"/><path d="M30 62 18 96v12" fill="none" stroke="#c9d3ee"/><circle cx="60" cy="38" r="9" fill="#2b5cff"/></svg>
+            </div>
+            <div class="card-body">
+              <h3>Présentoirs</h3>
+              <p>Présentoirs de comptoir avec fronton, pour mettre vos produits en avant en magasin.</p>
+              <span class="card-link">Personnaliser →</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="block soft" id="etapes">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Comment ça marche</span>
+          <h2>De l'idée au devis en 3 étapes</h2>
+          <p>Pas besoin d'être graphiste : vous nous montrez exactement ce que vous voulez.</p>
+        </div>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><h3>Choisissez votre emballage</h3><p>Boîte pliante, sac ou coffret, puis indiquez les dimensions de votre produit.</p></div>
+          <div class="step"><div class="step-num">2</div><h3>Personnalisez en 3D</h3><p>Couleur, finition, logo, texte : faites tourner la maquette et voyez le rendu en direct.</p></div>
+          <div class="step"><div class="step-num">3</div><h3>Téléchargez et demandez un devis</h3><p>Récupérez l'image de votre maquette et envoyez-nous votre demande en un clic.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block">
+      <div class="container">
+        <div class="cta-band">
+          <div>
+            <h2>Votre emballage prend forme ?</h2>
+            <p>Créez votre maquette, puis parlons de sa fabrication.</p>
+          </div>
+          <a class="btn" href="editor.html">Commencer ma maquette →</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <span>© 2026 PackStudio — Emballages sur mesure</span>
+      <span>Boîtes pliantes · Sacs · Coffrets · Présentoirs</span>
+    </div>
+  </footer>
+
+  <script type="module" src="/src/home.js"></script>
+</body>
+</html>

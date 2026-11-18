@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Éditeur 3D — PackStudio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body class="editor-page">
+  <header class="site-header">
+    <div class="container" style="width: calc(100% - 32px)">
+      <a class="brand" href="./">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3 28 9.5v13L16 29 4 22.5v-13z" fill="#2b5cff"/><path d="M16 3 28 9.5 16 16 4 9.5z" fill="#6f90ff"/><path d="M16 16v13L4 22.5v-13z" fill="#1d44d6"/></svg>
+        <span>PackStudio</span>
+      </a>
+      <nav class="nav"><a href="./">← Accueil</a></nav>
+      <div class="header-actions">
+        <button class="btn btn-ghost btn-sm" data-action="download">Télécharger</button>
+        <button class="btn btn-primary btn-sm" data-action="quote">Demander un devis</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="editor">
+    <div class="viewport">
+      <canvas id="editor-canvas" aria-label="Maquette 3D de votre emballage"></canvas>
+      <div class="vp-toolbar">
+        <button class="vp-btn" id="reset-view" title="Recentrer la vue">⟲ Recentrer</button>
+        <button class="vp-btn" id="annotate" aria-pressed="true" title="Placer une lettre en cliquant sur l'emballage">✚ Coter</button>
+        <button class="vp-btn" id="auto-rotate" aria-pressed="false" title="Rotation automatique">↻ Rotation</button>
+      </div>
+      <button class="vp-cta see-mounted" hidden>▶ Voir le résultat monté</button>
+      <button class="vp-cta vp-cta-ghost" id="see-flat" hidden>◀ Revoir à plat</button>
+      <span class="vp-hint" id="vp-hint">Cliquez pour placer une lettre · Glissez pour tourner</span>
+      <div class="vp-dims" id="vp-dims">120 × 80 × 200 mm</div>
+      <div class="pick" id="pick" role="dialog" aria-label="Préciser une dimension" hidden></div>
+      <div class="vp-bar" id="vp-bar">
+        <div class="vp-seg" role="group" aria-label="Vue">
+          <button data-view="3d" aria-pressed="true">3D</button>
+          <button data-view="2d" aria-pressed="false">2D</button>
+        </div>
+        <label class="vp-open" id="vp-open">
+          <span>Fermé</span>
+          <input type="range" id="open-range" min="0" max="1" step="0.01" value="0" aria-label="Ouverture" />
+          <span>Ouvert</span>
+        </label>
+      </div>
+    </div>
+
+    <aside class="panel">
+      <div class="panel-scroll">
+        <h1>Votre emballage</h1>
+        <p class="sub">Réglez chaque détail, la maquette se met à jour en direct.</p>
+
+        <div class="group">
+          <p class="group-title">Type d'emballage</p>
+          <div class="seg seg-4">
+            <button aria-pressed="true" data-type="boite-pliante">
+              <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M16 4 27 9.5v13L16 28 5 22.5v-13z"/><path d="M5 9.5 16 15l11-5.5M16 15v13"/></svg>
+              Boîte pliante
+            </button>
+            <button aria-pressed="false" data-type="sac">
+              <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M7 10h18l2 18H5z"/><path d="M12 10c0-4 2-6 4-6s4 2 4 6"/></svg>
+              Sac
+            </button>
+            <button aria-pressed="false" data-type="coffret">
+              <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 12h24v14H4z"/><path d="M3 8h26v5H3z"/></svg>
+              Coffret
+            </button>
+            <button aria-pressed="false" data-type="presentoir">
+              <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M8 4h16v14H8z"/><path d="M8 18 4 28h24l-4-10"/><path d="M4 28v-2l4-8"/></svg>
+              Présentoir
+            </button>
+          </div>
+        </div>
+
+        <div class="group" id="view-group" hidden>
+          <p class="group-title">Vue du présentoir</p>
+          <div class="seg seg-2">
+            <button aria-pressed="true" data-flat="no">
+              <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M8 4h16v14H8z"/><path d="M8 18 4 28h24l-4-10"/></svg>
+              Monté
+            </button>
+            <button aria-pressed="false" data-flat="yes">
+              <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-dasharray="0"><path d="M11 3h10v8h7v10h-7v8H11v-8H4V11h7z"/></svg>
+              Déplié (à plat)
+            </button>
+          </div>
+        </div>
+
+        <div class="group" id="dims-group">
+          <p class="group-title" id="dims-title">Dimensions</p>
+          <div class="dim-row"><label for="r-width">Longueur</label><input type="range" id="r-width" min="40" max="500" step="1" data-dim="width" /><div class="num"><input type="number" min="40" max="500" data-dim="width" aria-label="Largeur A en mm" /><span>mm</span></div></div>
+          <div class="dim-row"><label for="r-depth">Largeur</label><input type="range" id="r-depth" min="20" max="500" step="1" data-dim="depth" /><div class="num"><input type="number" min="20" max="500" data-dim="depth" aria-label="Longueur B en mm" /><span>mm</span></div></div>
+          <div class="dim-row"><label for="r-height">Hauteur</label><input type="range" id="r-height" min="20" max="500" step="1" data-dim="height" /><div class="num"><input type="number" min="20" max="500" data-dim="height" aria-label="Hauteur H en mm" /><span>mm</span></div></div>
+        </div>
+
+        <div class="group" id="detail-group" hidden>
+          <p class="group-title">Détail du présentoir</p>
+          <div id="detail-list"></div>
+          <p class="note">Le bord avant et les pattes ne peuvent pas dépasser la hauteur du dos. Ces mesures se règlent aussi en cliquant sur la partie concernée du présentoir.</p>
+        </div>
+
+        <div class="group" id="cotes-group">
+          <p class="group-title" id="cotes-title">Vos cotes</p>
+          <p class="note" id="cotes-note" style="margin: -4px 0 12px">Cliquez sur une partie de l'emballage : une lettre apparaît à cet endroit. Choisissez ce qu'elle mesure, puis indiquez la dimension en mm : la maquette s'adapte.</p>
+          <div id="cotes-list"></div>
+          <p class="note" id="cotes-empty">Aucune cote pour l'instant.</p>
+          <button class="btn btn-primary btn-sm btn-block see-mounted" style="margin-top: 6px" hidden>▶ Voir le résultat monté</button>
+          <button class="link-btn" id="cotes-clear" hidden>Effacer toutes les cotes</button>
+        </div>
+
+
+        <div class="group">
+          <p class="group-title">Finition</p>
+          <div class="finish">
+            <button data-finish="mat" aria-pressed="true"><span class="sw sw-mat"></span>Mat</button>
+            <button data-finish="brillant" aria-pressed="false"><span class="sw sw-brillant"></span>Brillant</button>
+            <button data-finish="kraft" aria-pressed="false"><span class="sw sw-kraft"></span>Kraft</button>
+          </div>
+        </div>
+
+        <div class="group">
+          <p class="group-title">Couleur</p>
+          <div class="swatches" id="swatches"></div>
+          <p class="note" id="kraft-note" hidden>La finition kraft garde la couleur naturelle du carton.</p>
+        </div>
+
+        <div class="group">
+          <p class="group-title">Logo et texte</p>
+          <label class="drop" id="drop">
+            <input type="file" id="logo-input" accept="image/png,image/jpeg,image/svg+xml,image/webp" hidden />
+            <strong>Importer votre logo</strong> ou glissez-le ici
+            <small>PNG transparent conseillé · JPG, SVG, WEBP</small>
+          </label>
+          <div class="logo-file" id="logo-file">
+            <img id="logo-thumb" alt="" />
+            <span id="logo-name"></span>
+            <button class="link-btn" id="logo-remove">Retirer</button>
+          </div>
+          <label class="field">Taille du logo
+            <input type="range" id="logo-scale" min="0.15" max="0.95" step="0.01" />
+          </label>
+          <label class="field">Texte sur l'emballage
+            <input type="text" id="text-input" maxlength="40" placeholder="Ex. : le nom de votre marque" />
+          </label>
+          <label class="field">Emplacement du logo et du texte
+            <select id="placement">
+              <option value="front">Face avant</option>
+              <option value="front-back">Faces avant et arrière</option>
+              <option value="all">Toutes les faces visibles</option>
+            </select>
+          </label>
+        </div>
+      </div>
+
+      <div class="panel-actions">
+        <button class="btn btn-primary btn-block" data-action="quote">Demander un devis pour cette maquette →</button>
+        <button class="btn btn-ghost btn-block" data-action="download">⤓ Télécharger ma maquette (PNG)</button>
+        <label class="check"><input type="checkbox" id="transparent" /> Fond transparent</label>
+      </div>
+    </aside>
+  </main>
+
+  <dialog class="quote" id="quote">
+    <div class="quote-grid">
+      <div class="quote-recap">
+        <h3>Votre maquette</h3>
+        <img id="recap-img" alt="Aperçu de votre maquette" />
+        <ul class="recap-list" id="recap-list"></ul>
+      </div>
+      <form class="quote-form" id="quote-form">
+        <button type="button" class="close-x" id="quote-close" aria-label="Fermer">×</button>
+        <div id="quote-fields">
+          <h2>Demande de devis</h2>
+          <p>Votre maquette est jointe automatiquement. Précisez la quantité et vos coordonnées.</p>
+          <div class="form-row">
+            <label class="field">Quantité souhaitée *
+              <select name="quantite" required>
+                <option value="">Choisir…</option>
+                <option>100 à 500</option>
+                <option>500 à 1 000</option>
+                <option>1 000 à 5 000</option>
+                <option>5 000 à 10 000</option>
+                <option>Plus de 10 000</option>
+              </select>
+            </label>
+            <label class="field">Délai souhaité
+              <select name="delai">
+                <option>Pas de contrainte</option>
+                <option>Moins d'un mois</option>
+                <option>1 à 3 mois</option>
+                <option>Plus de 3 mois</option>
+              </select>
+            </label>
+          </div>
+          <div class="form-row">
+            <label class="field">Nom et prénom *<input type="text" name="nom" required autocomplete="name" /></label>
+            <label class="field">Entreprise<input type="text" name="entreprise" autocomplete="organization" /></label>
+          </div>
+          <div class="form-row">
+            <label class="field">E-mail *<input type="email" name="email" required autocomplete="email" /></label>
+            <label class="field">Téléphone<input type="tel" name="telephone" autocomplete="tel" /></label>
+          </div>
+          <label class="field">Message<textarea name="message" rows="3" placeholder="Produit à emballer, impression intérieure, questions…"></textarea></label>
+          <button type="submit" class="btn btn-primary btn-block">Envoyer ma demande de devis</button>
+          <p class="legal">Vos informations servent uniquement à établir votre devis.</p>
+        </div>
+        <div class="success" id="quote-success" hidden>
+          <div class="ok">✓</div>
+          <h2>Merci, votre demande est envoyée !</h2>
+          <p>Nous étudions votre maquette et revenons vers vous rapidement avec un devis personnalisé.</p>
+          <button type="button" class="btn btn-ghost" id="quote-done">Revenir à ma maquette</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast"></div>
+
+  <script type="module" src="/src/editor.js"></script>
+</body>
+</html>
